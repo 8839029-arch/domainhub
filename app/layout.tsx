@@ -22,8 +22,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = localizedTitle(settings, locale)
   const description = localizedDescription(settings, locale)
 
-  // favicon:后台设置了图片则用它,否则回退内置 SVG 图标
-  const icon = settings.faviconUrl ? [{ url: settings.faviconUrl }] : [{ url: '/icon.svg', type: 'image/svg+xml' }]
+  // 后台自定义 favicon 优先,未设置时使用项目品牌图标
+  const icon = settings.faviconUrl
+    ? [{ url: settings.faviconUrl }]
+    : [{ url: '/favicon.ico' }, { url: '/icon.svg', type: 'image/svg+xml' }]
 
   return {
     metadataBase: new URL('https://tldbi.com'),
@@ -42,16 +44,23 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       url: 'https://tldbi.com',
       locale: locale === 'en' ? 'en_US' : 'zh_CN',
+      images: [{
+        url: '/og-image.png',
+        width: 1424,
+        height: 752,
+        alt: 'TLDbi.com domain price comparison',
+      }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images: ['/og-image.png'],
     },
     robots: { index: true, follow: true },
     icons: {
       icon,
-      apple: settings.faviconUrl || '/icon.svg',
+      apple: settings.faviconUrl || '/apple-touch-icon.png',
     },
   }
 }
